@@ -4,7 +4,7 @@ import re
 class QueryType(Enum):
     SELECT = "Top|Bottom|show|find|select|get|display|list"
     GROUP_BY = "group by|grouped by"
-    WHERE = "where|with|having"
+    WHERE = "where|with|having|whose"
     SORT = "sort by|order by|sorted by|ordered by"
 
 class WhereCondition:
