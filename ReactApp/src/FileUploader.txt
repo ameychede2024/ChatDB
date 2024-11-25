@@ -1,0 +1,51 @@
+import React, { useState, ChangeEvent } from 'react';
+import axios from 'axios';
+
+interface UploadResponse {
+    message: string;
+}
+
+const FileUploader: React.FC = () => {
+    const [file, setFile] = useState<File | null>(null);
+    const [uploadStatus, setUploadStatus] = useState<string>('');
+
+    const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files && event.target.files.length > 0) {
+            setFile(event.target.files[0]);
+        }
+    };
+
+    const handleUpload = async () => {
+        if (!file) {
+            setUploadStatus('Please select a file');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            setUploadStatus('Uploading...');
+            const response = await axios.post<UploadResponse>('http://localhost:5000/upload', formData, {
+                headers: {
+                'Content-Type': 'multipart/form-data'
+                }
+            });
+            setUploadStatus(response.data.message);
+        } 
+        catch (error) {
+            setUploadStatus('Error uploading file');
+            console.error('Upload error:', error);
+        }
+    };
+
+    return (
+        <div>
+        <input type="file" onChange={handleFileChange} accept=".csv" />
+        <button onClick={handleUpload}>Upload CSV</button>
+        <p>{uploadStatus}</p>
+        </div>
+    );
+};
+
+export default FileUploader;
